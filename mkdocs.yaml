@@ -1,0 +1,23 @@
+site_name: ArgparsePydantic
+repo_url: https://github.com/ayasyrev/argparse_pydantic
+repo_name: argparse_pydantic
+docs_dir: docs  # The docs directory.
+
+copyright: Copyright &copy; 2023 Andrei Yasyrev.
+theme:
+  name: material
+  custom_dir: docs/overrides
+
+  palette:
+    - scheme: default
+      toggle:
+        icon: material/toggle-switch-off-outline
+        name: Switch to dark mode
+    - scheme: slate
+      toggle:
+        icon: material/toggle-switch
+        name: Switch to light mode
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
