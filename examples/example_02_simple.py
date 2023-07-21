@@ -1,10 +1,10 @@
-# Basic example - create base config for you app with dataclass.
+# Basic example - create base config for you app with pydantic.
 # same as example_01_simple.py but parser created at parse_cfg function.
 from pydantic import BaseModel
 from argparse_pydantic.core import parse_args
 
 
-# Create config for App as dataclass
+# Create config for App as pydantic BaseModel.
 class AppCfg(BaseModel):
     arg_1: int = 0
     arg_2: float = 0.1
