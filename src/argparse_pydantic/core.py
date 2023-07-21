@@ -46,10 +46,19 @@ def add_field_arg(
     parser: argparse.ArgumentParser, field_name: str, field_info: FieldInfo
 ) -> None:
     flags = [f"--{field_name}"]
+    if field_info.json_schema_extra:
+        flag = field_info.json_schema_extra.get("flag", None)
+        if flag:
+            if len(flag) == 1:
+                flags.insert(0, f"-{flag}")
+            if flag.startswith("-") and len(flag) == 2:
+                flags.insert(0, flag)
+
     kwargs = kwargs_add_argument(
         default=field_info.default,
         type=field_info.annotation,
         required=field_info.is_required(),
+        help=field_info.description,
     )
     parser.add_argument(*flags, **kwargs)
 
