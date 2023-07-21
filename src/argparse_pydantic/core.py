@@ -12,7 +12,8 @@ from argparse_pydantic.helpers import ArgumentParserCfg, create_parser
 ArgType = Union[str, argparse.FileType, type, None]
 
 
-def kwargs_add_argument(
+def argument_kwargs(
+    flag: str | None = None,
     action: str | None = None,
     nargs: int | str | None = None,
     const: str | None = None,
@@ -28,6 +29,7 @@ def kwargs_add_argument(
     if default is PydanticUndefined:
         default = None
     kwargs = {
+        "flag": flag,
         "action": action,
         "nargs": nargs,
         "const": const,
@@ -54,7 +56,7 @@ def add_field_arg(
             if flag.startswith("-") and len(flag) == 2:
                 flags.insert(0, flag)
 
-    kwargs = kwargs_add_argument(
+    kwargs = argument_kwargs(
         default=field_info.default,
         type=field_info.annotation,
         required=field_info.is_required(),
