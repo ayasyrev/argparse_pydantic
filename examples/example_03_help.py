@@ -3,7 +3,7 @@ import argparse
 
 from pydantic import BaseModel, Field  # only for tests
 
-from argparse_pydantic import ArgumentParserCfg, add_args_from_model, parse_args
+from argparse_pydantic import ArgumentParserCfg, add_args_from_model, argument_kwargs, parse_args
 
 # for tests
 from argparse_pydantic import create_parser
@@ -29,6 +29,10 @@ class AppCfg(BaseModel):
         json_schema_extra={"flag": "s"},
         description="string arg, can be used with short flag -s",
     )
+    arg_3: float = Field(
+        default=0.0,
+        json_schema_extra=argument_kwargs(flag="f"),
+    )
 
 
 # result parser will be same as below
@@ -43,6 +47,7 @@ parser_base.add_argument(
     default="",
     help="string arg, can be used with short flag -s",
 )
+parser_base.add_argument("-f", "--arg_3", type=float, default=0.0)
 
 
 if __name__ == "__main__":
