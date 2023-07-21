@@ -8,6 +8,7 @@ from argparse_pydantic.test_tools import (
     parsers_actions_diff,
     parsers_actions_equal,
     parsers_args_equal,
+    parsers_equal,
 )
 
 
@@ -56,6 +57,20 @@ def test_parser():
     # obj same data from dataclass
     dc_obj_default = ArgHelp(arg_int=10)
     assert dc_obj_parsed == dc_obj_default
+
+
+def test_positional():
+    """test positional args"""
+    class ArgPos(BaseModel):
+        arg_1: int = Field(json_schema_extra=argument_kwargs(positional=True))
+        arg_2: float
+
+    parser_base = argparse.ArgumentParser()
+    parser_base.add_argument("arg_1", type=int)
+    parser_base.add_argument("--arg_2", type=float, required=True)
+    parser = create_parser()
+    add_args_from_model(parser, ArgPos)
+    assert parsers_equal(parser_base, parser)
 
 
 class ArgFlag(BaseModel):

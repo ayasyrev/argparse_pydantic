@@ -50,10 +50,11 @@ def add_field_arg(
     parser: argparse.ArgumentParser, field_name: str, field_info: FieldInfo
 ) -> None:
     help_message = field_info.description
-    flags = []
+    flags = [f"--{field_name}"]
     dest = None
     positional = None
     required = field_info.is_required()
+    default = field_info.default if field_info.default is not PydanticUndefined else None
 
     if field_info.json_schema_extra:
         flag = field_info.json_schema_extra.get("flag", None)
@@ -69,13 +70,13 @@ def add_field_arg(
         if positional:
             dest = field_name
             flags = []
+            required = None
         else:
             required = True
-    flags.append(f"--{field_name}")
 
     # process help message - ? add additional info like defaults and type
     kwargs = argument_kwargs(
-        default=field_info.default,
+        default=default,
         type=field_info.annotation,
         required=required,
         help=help_message,
