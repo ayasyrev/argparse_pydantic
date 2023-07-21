@@ -7,6 +7,8 @@ from pydantic import BaseModel
 from pydantic.fields import FieldInfo
 from pydantic_core import PydanticUndefined
 
+from argparse_pydantic.helpers import ArgumentParserCfg, create_parser
+
 ArgType = Union[str, argparse.FileType, type, None]
 
 
@@ -69,10 +71,11 @@ def create_model_obj(model: BaseModel, args: argparse.Namespace) -> BaseModel:
 
 def parse_args(
     cfg: Type[BaseModel],
+    parser_cfg: ArgumentParserCfg | None = None,
     args: Sequence[str] | None = None,
 ) -> BaseModel:
     """parse args"""
-    parser = argparse.ArgumentParser()
+    parser = create_parser(parser_cfg)
     add_args_from_model(parser, cfg)
     parsed_args = parser.parse_args(args=args)
     return create_model_obj(cfg, parsed_args)
