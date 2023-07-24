@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import argparse
-from typing import Any, Iterable, Sequence, Type, Union
+from typing import Any, Iterable, Optional, Sequence, Type, Union
 
 from pydantic import BaseModel
 from pydantic.fields import FieldInfo
@@ -70,9 +70,8 @@ def add_field_arg(
     if field_info.json_schema_extra:
         flag = field_info.json_schema_extra.get("flag", None)
         if flag:
-            if len(flag) == 1:
-                flags.insert(0, f"-{flag}")
-            if flag.startswith("-") and len(flag) == 2:
+            flag = process_flag(flag)
+            if flag:
                 flags.insert(0, flag)
         action = field_info.json_schema_extra.get("action", None)
         help_message = field_info.json_schema_extra.get("help", help_message)
@@ -86,9 +85,9 @@ def add_field_arg(
         else:
             required = True
 
-    # todo: add validation for store true / false vs defaults
     if action:
         type = None
+        validate_action(action, default)
         if action not in ("count", "store_const"):
             default = None
 
@@ -102,6 +101,21 @@ def add_field_arg(
         action=action,
     )
     parser.add_argument(*flags, **kwargs)
+
+
+def process_flag(flag) -> Optional[str]:
+    if len(flag) == 1:
+        return f"-{flag}"
+    if flag.startswith("-") and len(flag) == 2:
+        return flag
+    return None
+
+
+def validate_action(action: str, default: Type):
+    if action in ("store_true", "store_false"):
+        action_default = action.split("_")[1]
+        if action_default == str(default).lower():
+            raise ValueError(f"action {action} doesn't match default {default}")
 
 
 def add_args_from_model(
