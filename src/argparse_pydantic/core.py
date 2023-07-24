@@ -86,6 +86,7 @@ def add_field_arg(
         else:
             required = True
 
+    # todo: add validation for store true / false vs defaults
     if action:
         type = None
         if action not in ("count", "store_const"):

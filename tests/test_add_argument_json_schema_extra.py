@@ -2,7 +2,11 @@ import argparse
 
 from pydantic import BaseModel, Field
 
-from argparse_pydantic.core import add_args_from_model, argument_kwargs, create_model_obj
+from argparse_pydantic.core import (
+    add_args_from_model,
+    argument_kwargs,
+    create_model_obj,
+)
 from argparse_pydantic.helpers import ArgumentParserCfg, create_parser
 from argparse_pydantic.test_tools import (
     parsers_actions_diff,
@@ -61,6 +65,7 @@ def test_parser():
 
 def test_positional():
     """test positional args"""
+
     class ArgPos(BaseModel):
         arg_1: int = Field(json_schema_extra=argument_kwargs(positional=True))
         arg_2: float

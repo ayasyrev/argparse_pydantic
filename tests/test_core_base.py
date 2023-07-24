@@ -19,6 +19,7 @@ def test_argument_kwargs():
 
 def test_get_field_type():
     """test get_field_type"""
+
     class Model(BaseModel):
         arg_1: int
         arg_2: Optional[int] = None
