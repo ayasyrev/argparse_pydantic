@@ -24,7 +24,7 @@ def test_action_base():
 
     class SimpleArg(BaseModel):
         arg_1: bool = True
-        arg_2: int = Field(
+        arg_2: bool = Field(
             default=False,
             json_schema_extra=argument_kwargs(
                 action="store_true",

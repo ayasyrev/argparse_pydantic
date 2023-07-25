@@ -58,14 +58,15 @@ def get_field_type(field_info: FieldInfo) -> Type:
 def add_field_arg(
     parser: argparse.ArgumentParser, field_name: str, field_info: FieldInfo
 ) -> None:
-    help_message = field_info.description
+    """add argument to parser from field_info"""
     flags = [f"--{field_name}"]
-    dest = None
+    kwargs = argument_kwargs(
+        help=field_info.description,
+        required=field_info.is_required(),
+        default=field_info.default if field_info.default is not PydanticUndefined else None,
+        type=get_field_type(field_info),
+    )
     positional = None
-    required = field_info.is_required()
-    default = field_info.default if field_info.default is not PydanticUndefined else None
-    type = get_field_type(field_info)  # pylint: disable=redefined-builtin
-    action = None
 
     if field_info.json_schema_extra:
         flag = field_info.json_schema_extra.get("flag", None)
@@ -73,37 +74,32 @@ def add_field_arg(
             flag = process_flag(flag)
             if flag:
                 flags.insert(0, flag)
-        action = field_info.json_schema_extra.get("action", None)
-        help_message = field_info.json_schema_extra.get("help", help_message)
         positional = field_info.json_schema_extra.get("positional", None)
+        action = field_info.json_schema_extra.get("action", None)
+        if action:
+            kwargs["action"] = action
+        kwargs["help"] = field_info.json_schema_extra.get("help", field_info.description)
 
     if field_info.default is PydanticUndefined:
         if positional:
-            dest = field_name
+            kwargs["dest"] = field_name
             flags = []
-            required = None
+            kwargs.pop("required", None)
         else:
-            required = True
+            kwargs["required"] = True
 
-    if action:
-        type = None
-        validate_action(action, default)
-        if action not in ("count", "store_const"):
-            default = None
+    if "action" in kwargs:
+        kwargs.pop("type", None)
+        validate_action(kwargs["action"], kwargs["default"])
+        if kwargs["action"] not in ("count", "store_const"):
+            kwargs.pop("default", None)
 
     # process help message - ? add additional info like defaults and type
-    kwargs = argument_kwargs(
-        default=default,
-        type=type,
-        required=required,
-        help=help_message,
-        dest=dest,
-        action=action,
-    )
     parser.add_argument(*flags, **kwargs)
 
 
 def process_flag(flag) -> Optional[str]:
+    """check short flag - if without prefix - add it, if long string, return None"""
     if len(flag) == 1:
         return f"-{flag}"
     if flag.startswith("-") and len(flag) == 2:
@@ -112,6 +108,7 @@ def process_flag(flag) -> Optional[str]:
 
 
 def validate_action(action: str, default: Type):
+    """Check if store true / false corresponds to default value"""
     if action in ("store_true", "store_false"):
         action_default = action.split("_")[1]
         if action_default == str(default).lower():
@@ -121,12 +118,14 @@ def validate_action(action: str, default: Type):
 def add_args_from_model(
     parser: argparse.ArgumentParser, model: BaseModel
 ) -> argparse.ArgumentParser:
+    """add args from model to parser"""
     for field_name, field_info in model.model_fields.items():
         add_field_arg(parser, field_name, field_info)
     return parser
 
 
 def create_model_obj(model: BaseModel, args: argparse.Namespace) -> BaseModel:
+    """create model from parsed args"""
     kwargs = {
         key: val for key, val in args.__dict__.items() if key in model.model_fields
     }
