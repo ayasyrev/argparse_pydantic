@@ -12,6 +12,24 @@ from argparse_pydantic.helpers import ArgumentParserCfg, create_parser
 
 ArgType = Union[str, argparse.FileType, type, None]
 
+ARG_KEYWORDS = (
+    "action",
+    "action",
+    "nargs",
+    "const",
+    "default",
+    "type",
+    "choices",
+    "required",
+    "help",
+    "metavar",
+    "dest",
+    "version",
+    # not in argparse, for flags
+    "flag",
+    "positional",
+)
+
 
 def argument_kwargs(
     flag: str | None = None,
@@ -55,6 +73,14 @@ def get_field_type(field_info: FieldInfo) -> Type:
     return field_type
 
 
+def parse_field_kwargs(json_schema_extra: dict[str, Any]) -> dict[str, Any]:
+    """parse json_schema_extra for argparse add_argument args"""
+    field_kwargs = {key: val for key, val in json_schema_extra.items() if key in ARG_KEYWORDS and val is not None}
+    if "flag" in field_kwargs:
+        field_kwargs["flag"] = process_flag(field_kwargs["flag"])
+    return field_kwargs
+
+
 def add_field_arg(
     parser: argparse.ArgumentParser, field_name: str, field_info: FieldInfo
 ) -> None:
@@ -66,22 +92,19 @@ def add_field_arg(
         default=field_info.default if field_info.default is not PydanticUndefined else None,
         type=get_field_type(field_info),
     )
-    positional = None
 
     if field_info.json_schema_extra:
-        flag = field_info.json_schema_extra.get("flag", None)
-        if flag:
-            flag = process_flag(flag)
-            if flag:
-                flags.insert(0, flag)
-        positional = field_info.json_schema_extra.get("positional", None)
-        action = field_info.json_schema_extra.get("action", None)
-        if action:
-            kwargs["action"] = action
-        kwargs["help"] = field_info.json_schema_extra.get("help", field_info.description)
+        field_kwargs = parse_field_kwargs(field_info.json_schema_extra)
+        kwargs = {
+            **field_kwargs,
+            **kwargs,
+        }
+
+    if "flag" in kwargs:
+        flags.insert(0, kwargs.pop("flag"))
 
     if field_info.default is PydanticUndefined:
-        if positional:
+        if kwargs.pop("positional", False):
             kwargs["dest"] = field_name
             flags = []
             kwargs.pop("required", None)

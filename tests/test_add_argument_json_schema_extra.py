@@ -75,6 +75,7 @@ def test_positional():
     parser_base.add_argument("--arg_2", type=float, required=True)
     parser = create_parser()
     add_args_from_model(parser, ArgPos)
+    assert not parsers_actions_diff(parser_base, parser)
     assert parsers_equal(parser_base, parser)
 
 
