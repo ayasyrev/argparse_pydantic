@@ -113,7 +113,7 @@ def add_field_arg(
 
     if "action" in kwargs:
         kwargs.pop("type", None)
-        validate_action(kwargs["action"], kwargs["default"])
+        validate_action(kwargs["action"], kwargs.get("default", None))
         if kwargs["action"] not in ("count", "store_const"):
             kwargs.pop("default", None)
 
@@ -130,7 +130,7 @@ def process_flag(flag) -> Optional[str]:
     return None
 
 
-def validate_action(action: str, default: Type):
+def validate_action(action: str, default: Optional[Type]) -> None:
     """Check if store true / false corresponds to default value"""
     if action in ("store_true", "store_false"):
         action_default = action.split("_")[1]
