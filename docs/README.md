@@ -3,7 +3,7 @@
 Config for argparse with pydantic model.
 
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/argparse_pydantics)](https://pypi.org/project/argparse_pydantic/)
-![PyPI](https://img.shields.io/pypi/v/benchmark-utils?color=blue)  
+![PyPI](https://img.shields.io/pypi/v/argparse_pydantic?color=blue)  
 [![Tests](https://github.com/ayasyrev/argparse_pydantic/workflows/Tests/badge.svg)](https://github.com/ayasyrev/argparse_pydantic/actions?workflow=Tests)  [![Codecov](https://codecov.io/gh/ayasyrev/argparse_pydantic/branch/main/graph/badge.svg)](https://codecov.io/gh/ayasyrev/argparse_pydantic)  
 
 Simple wrapper for python argparse.  
