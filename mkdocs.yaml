@@ -1,9 +1,8 @@
-site_name: ArgparsePydantic
+site_name: Argparse Pydantic
 repo_url: https://github.com/ayasyrev/argparse_pydantic
 repo_name: argparse_pydantic
-docs_dir: docs  # The docs directory.
+docs_dir: docs
 
-copyright: Copyright &copy; 2023 Andrei Yasyrev.
 theme:
   name: material
   custom_dir: docs/overrides
@@ -21,3 +20,8 @@ markdown_extensions:
   - admonition
   - pymdownx.details
   - pymdownx.superfences
+extra:
+  analytics:
+    provider: google
+    property: G-0F3FK713C2
+copyright: Copyright &copy; 2023 Andrei Yasyrev.
