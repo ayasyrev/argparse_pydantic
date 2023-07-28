@@ -1,4 +1,4 @@
-# Argpare Pydantic
+# Argparse Pydantic
 
 Config for argparse with pydantic model.
 
@@ -88,7 +88,7 @@ from argparse_pydantic import create_model_obj
 cfg = create_model_obj(AppCfg, args)
 ```
 
-Now we got confic with type checks / validation ont type hinting when use it at IDE.
+Now we got  config with type checks / validation ont type hinting when use it at IDE.
 
 
 ```python
