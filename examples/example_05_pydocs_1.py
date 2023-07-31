@@ -35,7 +35,7 @@ parser.add_argument("-v", "--verbose", action="store_true")  # on/off flag
 
 # We create config for App
 class AppCfg(BaseModel):
-    filename: str = Field(json_schema_extra=argument_kwargs(positional=True))  # positional argument
+    filename: str
     count: Optional[str] = Field(
         default=None,
         json_schema_extra=argument_kwargs(
