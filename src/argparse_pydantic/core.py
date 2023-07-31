@@ -82,7 +82,10 @@ def parse_field_kwargs(json_schema_extra: dict[str, Any]) -> dict[str, Any]:
 
 
 def add_field_arg(
-    parser: argparse.ArgumentParser, field_name: str, field_info: FieldInfo
+    parser: argparse.ArgumentParser,
+    field_name: str,
+    field_info: FieldInfo,
+    undefined_positional: bool = True,
 ) -> None:
     """add argument to parser from field_info"""
     flags = [f"--{field_name}"]
@@ -104,7 +107,8 @@ def add_field_arg(
         flags.insert(0, kwargs.pop("flag"))
 
     if field_info.default is PydanticUndefined:
-        if kwargs.pop("positional", False):
+        kwargs_positional = kwargs.pop("positional", False)
+        if undefined_positional or kwargs_positional:
             kwargs["dest"] = field_name
             flags = []
             kwargs.pop("required", None)
@@ -139,11 +143,13 @@ def validate_action(action: str, default: Optional[Type]) -> None:
 
 
 def add_args_from_model(
-    parser: argparse.ArgumentParser, model: BaseModel
+    parser: argparse.ArgumentParser,
+    model: BaseModel,
+    undefined_positional: bool = True,
 ) -> argparse.ArgumentParser:
     """add args from model to parser"""
     for field_name, field_info in model.model_fields.items():
-        add_field_arg(parser, field_name, field_info)
+        add_field_arg(parser, field_name, field_info, undefined_positional)
     return parser
 
 

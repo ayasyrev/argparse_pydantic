@@ -22,10 +22,8 @@ parser.add_argument(
 class AppCfg(BaseModel):  # pylint: disable=function-redefined
     square: int = Field(
         description="display a square of a given number",
-        json_schema_extra=argument_kwargs(
-            positional=True,
-        )
     )
+
     verbose: bool = Field(
         default=False,
         json_schema_extra=argument_kwargs(
@@ -69,9 +67,6 @@ parser.add_argument("-v", "--verbosity", type=int, help="increase output verbosi
 class AppCfg(BaseModel):  # pylint: disable=function-redefined
     square: int = Field(
         description="display a square of a given number",
-        json_schema_extra=argument_kwargs(
-            positional=True,
-        )
     )
     verbosity: Optional[int] = Field(
         default=None,
@@ -113,9 +108,6 @@ parser.add_argument(
 class AppCfg(BaseModel):  # pylint: disable=function-redefined
     square: int = Field(
         description="display a square of a given number",
-        json_schema_extra=argument_kwargs(
-            positional=True,
-        )
     )
     verbosity: Optional[int] = Field(
         default=None,
@@ -145,9 +137,6 @@ parser.add_argument(
 class AppCfg(BaseModel):  # pylint: disable=function-redefined
     square: int = Field(
         description="display the square of a given number",
-        json_schema_extra=argument_kwargs(
-            positional=True,
-        )
     )
     verbosity: Optional[int] = Field(
         default=None,
@@ -201,9 +190,6 @@ parser.add_argument(
 class AppCfg(BaseModel):  # pylint: disable=function-redefined
     square: int = Field(
         description="display a square of a given number",
-        json_schema_extra=argument_kwargs(
-            positional=True,
-        )
     )
     verbosity: int = Field(
         default=0,

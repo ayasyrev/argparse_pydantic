@@ -24,7 +24,7 @@ class AppCfg(BaseModel):  # type: ignore
 
 # create parser and add arguments from config class.
 parser_2 = argparse.ArgumentParser()
-add_args_from_model(parser_2, AppCfg)
+add_args_from_model(parser_2, AppCfg, undefined_positional=False)
 
 # parsers are equal
 assert parsers_equal_typed(parser, parser_2)

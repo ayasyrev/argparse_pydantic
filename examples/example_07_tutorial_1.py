@@ -19,7 +19,7 @@ parser.add_argument("echo")
 # create config for App
 class AppCfg(BaseModel):
     # echo: str
-    echo: str = Field(json_schema_extra=argument_kwargs(positional=True))
+    echo: str
 
 
 # create parser and add arguments from config

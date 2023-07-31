@@ -20,7 +20,6 @@ class AppCfg(BaseModel):
     square: int = Field(
         json_schema_extra=argument_kwargs(
             help="display a square of a given number",
-            positional=True,
         )
     )
 
