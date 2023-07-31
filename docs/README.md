@@ -58,16 +58,21 @@ parser = add_args_from_model(parser, AppCfg)
 
 So we got parser with arguments from config.
 
+It exactly like parser made classic way:  
+`parser.add_argument("echo")`
+
 
 ```python
 parser.print_help()
 ```
 <details open> <summary>output</summary>  
-    <pre>usage: MyApp [-h] --echo ECHO
+    <pre>usage: MyApp [-h] echo
+    
+    positional arguments:
+      echo
     
     options:
-      -h, --help   show this help message and exit
-      --echo ECHO
+      -h, --help  show this help message and exit
     </pre>
 </details>
 
@@ -75,7 +80,7 @@ Parse command line as usual.
 
 
 ```python
-args = parser.parse_args(["--echo", "argument from command line"])
+args = parser.parse_args(["argument from command line"])
 ```
 
 When we parse command line, we got Namespace object.  
