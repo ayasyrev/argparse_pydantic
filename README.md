@@ -2,7 +2,7 @@
 
 Config for argparse with pydantic model.
 
-[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/argparse_pydantics)](https://pypi.org/project/argparse_pydantic/)
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/argparse_pydantic)](https://pypi.org/project/argparse_pydantic/)
 ![PyPI](https://img.shields.io/pypi/v/argparse_pydantic?color=blue)  
 [![Tests](https://github.com/ayasyrev/argparse_pydantic/workflows/Tests/badge.svg)](https://github.com/ayasyrev/argparse_pydantic/actions?workflow=Tests)  [![Codecov](https://codecov.io/gh/ayasyrev/argparse_pydantic/branch/main/graph/badge.svg)](https://codecov.io/gh/ayasyrev/argparse_pydantic)  
 
@@ -58,16 +58,21 @@ parser = add_args_from_model(parser, AppCfg)
 
 So we got parser with arguments from config.
 
+It exactly like parser made classic way:  
+`parser.add_argument("echo")`
+
 
 ```python
 parser.print_help()
 ```
 <details open> <summary>output</summary>  
-    <pre>usage: MyApp [-h] --echo ECHO
+    <pre>usage: MyApp [-h] echo
+    
+    positional arguments:
+      echo
     
     options:
-      -h, --help   show this help message and exit
-      --echo ECHO
+      -h, --help  show this help message and exit
     </pre>
 </details>
 
@@ -75,7 +80,7 @@ Parse command line as usual.
 
 
 ```python
-args = parser.parse_args(["--echo", "argument from command line"])
+args = parser.parse_args(["argument from command line"])
 ```
 
 When we parse command line, we got Namespace object.  

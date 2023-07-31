@@ -42,7 +42,7 @@ def test_add_args_help():
     parser = create_parser(parser_cfg=parser_cfg)
 
     # add arguments - ArgHelp
-    add_args_from_model(parser, ArgHelp)
+    add_args_from_model(parser, ArgHelp, undefined_positional=False)
     assert parsers_args_equal(parser_base, parser)
     assert not parsers_actions_diff(parser_base, parser)
     assert parsers_actions_equal(parser_base, parser)
@@ -50,15 +50,15 @@ def test_add_args_help():
 
 
 def test_parser():
-    """basic parser test create dataclass instance."""
+    """basic parser test create cfg instance."""
     # create parser, add args
     parser = create_parser()
-    add_args_from_model(parser, ArgHelp)
+    add_args_from_model(parser, ArgHelp, undefined_positional=False)
     # parse
     args = parser.parse_args(["--arg_int", "10"])
     # create obj from parsed args
     dc_obj_parsed = create_model_obj(ArgHelp, args)
-    # obj same data from dataclass
+    # obj same data from cfg
     dc_obj_default = ArgHelp(arg_int=10)
     assert dc_obj_parsed == dc_obj_default
 
@@ -74,7 +74,7 @@ def test_positional():
     parser_base.add_argument("arg_1", type=int)
     parser_base.add_argument("--arg_2", type=float, required=True)
     parser = create_parser()
-    add_args_from_model(parser, ArgPos)
+    add_args_from_model(parser, ArgPos, undefined_positional=False)
     assert not parsers_actions_diff(parser_base, parser)
     assert parsers_equal(parser_base, parser)
 
@@ -103,7 +103,7 @@ def test_add_flag():
     args = parser.parse_args([])
     # create obj from parsed args
     dc_obj_parsed = create_model_obj(ArgFlag, args)
-    # obj same data from dataclass
+    # obj same data from cfg
     dc_obj_default = ArgFlag()
     assert dc_obj_parsed == dc_obj_default
 
@@ -126,14 +126,9 @@ def test_type_def():
     assert parsers_args_equal(parser_base, parser)
     assert parsers_actions_equal(parser_base, parser)
 
-    # captured = capsys.readouterr()
-    # out = captured.out
-    # assert "arg arg_1 type is <class 'int'>, but at metadata <class 'float'>" in out
-    # assert "default=1, but at metadata=2.0" in out
-
     args = parser.parse_args([])
     # create obj from parsed args
     dc_obj_parsed = create_model_obj(ArgTypeDef, args)
-    # obj same data from dataclass
+    # obj same data from cfg
     dc_obj_default = ArgTypeDef()
     assert dc_obj_parsed == dc_obj_default

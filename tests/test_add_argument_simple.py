@@ -27,8 +27,8 @@ def test_add_args_simple():
     # parser from cfg
     parser = argparse.ArgumentParser()
 
-    # add arguments - SimpleArg
-    parser = add_args_from_model(parser, SimpleArg)
+    # add arguments - SimpleArg, undefined - as optional, required
+    parser = add_args_from_model(parser, SimpleArg, undefined_positional=False)
     assert parsers_args_equal(parser_base, parser)
     assert not parsers_actions_diff(parser_base, parser)
     assert parsers_actions_equal(parser_base, parser)
@@ -36,6 +36,33 @@ def test_add_args_simple():
 
     # create instance
     args = parser.parse_args(["--arg_int", "1"])
+    assert args.arg_int == 1
+    cfg = create_model_obj(SimpleArg, args)
+    assert cfg.arg_int == 1
+    base_model_obj = SimpleArg(arg_int=1)
+    assert cfg == base_model_obj
+
+
+def test_add_args_simple_positional():
+    """test basic args, undefined positional"""
+    # base parser
+    parser_base = argparse.ArgumentParser()
+    parser_base.add_argument("arg_int", type=int)
+    parser_base.add_argument("--arg_float", type=float, default=0.0)
+    parser_base.add_argument("--arg_str", type=str, default="")
+
+    # parser from cfg
+    parser = argparse.ArgumentParser()
+
+    # add arguments - SimpleArg, undefined - positional, default
+    parser = add_args_from_model(parser, SimpleArg)
+    assert parsers_args_equal(parser_base, parser)
+    assert not parsers_actions_diff(parser_base, parser)
+    assert parsers_actions_equal(parser_base, parser)
+    assert parser_base.format_help() == parser.format_help()
+
+    # create instance
+    args = parser.parse_args(["1"])
     assert args.arg_int == 1
     cfg = create_model_obj(SimpleArg, args)
     assert cfg.arg_int == 1
