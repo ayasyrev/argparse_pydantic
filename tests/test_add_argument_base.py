@@ -43,3 +43,29 @@ def test_add_args_base():
     add_args_from_model(parser, Cfg2, undefined_positional=False)
 
     assert parsers_equal(parser_base, parser)
+
+
+def test_add_help_def_type():
+    """test add help_def_type"""
+    class Cfg1(BaseModel):
+        arg_int: int
+
+    parser = create_parser()
+    add_args_from_model(parser, Cfg1, help_def_type=True)
+
+    assert "positional arguments:\n  arg_int     [int]\n" in parser.format_help()
+
+    parser = create_parser()
+    add_args_from_model(parser, Cfg1, undefined_positional=False, help_def_type=True)
+    help_str = parser.format_help()
+    assert "--arg_int ARG_INT  [int]\n" in help_str
+
+    class Cfg2(BaseModel):
+        arg_int: int = 0
+        arg_float: float = 0.1
+
+    parser = create_parser()
+    add_args_from_model(parser, Cfg2, help_def_type=True)
+    help_str = parser.format_help()
+    assert "[int] default: 0\n" in help_str
+    assert "[float] default: 0.1\n" in help_str
