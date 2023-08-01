@@ -132,8 +132,8 @@ parser = add_args_from_model(parser, AppCfg2, undefined_positional=False)
 ```
 
 <!-- termynal -->
-$ python my_app.py -h
 ```
+$ python my_app.py -h
 usage: MyApp [-h] --arg_int ARG_INT [--arg_float ARG_FLOAT]
 
 options:
