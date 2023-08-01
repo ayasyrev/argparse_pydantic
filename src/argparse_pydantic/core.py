@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import sys
 from typing import Any, Iterable, Optional, Sequence, Type, Union
 
 from pydantic import BaseModel
@@ -29,6 +30,16 @@ ARG_KEYWORDS = (
     "flag",
     "positional",
 )
+
+
+if sys.version_info < (3, 10):  # pragma: no cover
+    def is_union(tp: type[Any] | None) -> bool:
+        return get_origin(tp) is Union
+else:
+    from types import UnionType
+
+    def is_union(tp: type[Any] | None) -> bool:
+        return get_origin(tp) is Union or isinstance(tp, UnionType)
 
 
 def argument_kwargs(
@@ -68,7 +79,7 @@ def argument_kwargs(
 def get_field_type(field_info: FieldInfo) -> Type:
     """get field type, convert to base type."""
     field_type = field_info.annotation
-    if get_origin(field_type) is Union:
+    if is_union(field_type):
         return get_args(field_type)[0]
     return field_type
 
@@ -86,6 +97,7 @@ def add_field_arg(
     field_name: str,
     field_info: FieldInfo,
     undefined_positional: bool = True,
+    help_def_type: bool = False,
 ) -> None:
     """add argument to parser from field_info"""
     flags = [f"--{field_name}"]
@@ -121,7 +133,13 @@ def add_field_arg(
         if kwargs["action"] not in ("count", "store_const"):
             kwargs.pop("default", None)
 
-    # process help message - ? add additional info like defaults and type
+    if help_def_type:
+        field_type = get_field_type(field_info)
+        if field_info.default is PydanticUndefined:
+            default = ""
+        else:
+            default = f"default: {field_info.default}"
+        kwargs["help"] = kwargs.get("help", "") + f" [{field_type.__name__}] {default}"
     parser.add_argument(*flags, **kwargs)
 
 
@@ -146,10 +164,11 @@ def add_args_from_model(
     parser: argparse.ArgumentParser,
     model: BaseModel,
     undefined_positional: bool = True,
+    help_def_type: bool = False,
 ) -> argparse.ArgumentParser:
     """add args from model to parser"""
     for field_name, field_info in model.model_fields.items():
-        add_field_arg(parser, field_name, field_info, undefined_positional)
+        add_field_arg(parser, field_name, field_info, undefined_positional, help_def_type)
     return parser
 
 
