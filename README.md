@@ -27,7 +27,7 @@ Or install from github repo:
 ## Base use.
 
 We use python argparse to parse arguments from command line.  
-So - just create parser as usual:
+So, just create parser as usual:
 
 
 ```python
@@ -114,6 +114,57 @@ cfg.echo
 </details>
 
 
+
+We can use undefined arguments as positional or optional (but required).
+
+
+```python
+class AppCfg2(BaseModel):
+    arg_int: int
+    arg_float: float = 0.1
+```
+
+
+```python
+parser = argparse.ArgumentParser(prog="MyApp")
+parser = add_args_from_model(parser, AppCfg2, undefined_positional=False)
+parser.print_help()
+```
+<details open> <summary>output</summary>  
+    <pre>usage: MyApp [-h] --arg_int ARG_INT [--arg_float ARG_FLOAT]
+    
+    options:
+      -h, --help            show this help message and exit
+      --arg_int ARG_INT
+      --arg_float ARG_FLOAT
+
+    </pre>
+</details>
+
+And we can add type hints to help message from our config.  
+
+
+
+```python
+parser = argparse.ArgumentParser(prog="MyApp")
+parser = add_args_from_model(
+    parser,
+    AppCfg2,
+    undefined_positional=False,
+    help_def_type=True,
+)
+parser.print_help()
+```
+<details open> <summary>output</summary>  
+<pre>usage: MyApp [-h] --arg_int ARG_INT [--arg_float ARG_FLOAT]
+    
+    options:
+      -h, --help            show this help message and exit
+      --arg_int ARG_INT     [int]
+      --arg_float ARG_FLOAT
+                            [float] default: 0.1
+</pre>
+</details>
 
 ## Examples
 
