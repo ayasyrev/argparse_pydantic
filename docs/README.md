@@ -61,20 +61,19 @@ So we got parser with arguments from config.
 It exactly like parser made classic way:  
 `parser.add_argument("echo")`
 
+Now we can use parser in you script usual way - `parser.parse_args()`
 
-```python
-parser.print_help()
+<!-- termynal -->
 ```
-<details open> <summary>output</summary>  
-    <pre>usage: MyApp [-h] echo
-    
-    positional arguments:
-      echo
-    
-    options:
-      -h, --help  show this help message and exit
-    </pre>
-</details>
+$ python my_app.py -h
+usage: MyApp [-h] echo
+
+positional arguments:
+  echo
+
+options:
+  -h, --help  show this help message and exit
+```
 
 Parse command line as usual.
 
@@ -115,6 +114,8 @@ cfg.echo
 
 
 
+### Optional if undefined.
+
 We can use undefined arguments as positional or optional (but required).
 
 
@@ -128,17 +129,20 @@ class AppCfg2(BaseModel):
 ```python
 parser = argparse.ArgumentParser(prog="MyApp")
 parser = add_args_from_model(parser, AppCfg2, undefined_positional=False)
-parser.print_help()
 ```
-<details open> <summary>output</summary>  
-    <pre>usage: MyApp [-h] --arg_int ARG_INT [--arg_float ARG_FLOAT]
-    
-    options:
-      -h, --help            show this help message and exit
-      --arg_int ARG_INT
-      --arg_float ARG_FLOAT
-    </pre>
-</details>
+
+<!-- termynal -->
+$ python my_app.py -h
+```
+usage: MyApp [-h] --arg_int ARG_INT [--arg_float ARG_FLOAT]
+
+options:
+  -h, --help            show this help message and exit
+  --arg_int ARG_INT
+  --arg_float ARG_FLOAT
+```
+
+### Add types and defaults values.
 
 And we can add type hints to help message from our config.  
 
@@ -152,18 +156,19 @@ parser = add_args_from_model(
     undefined_positional=False,
     help_def_type=True,
 )
-parser.print_help()
 ```
-<details open> <summary>output</summary>  
-    <pre>usage: MyApp [-h] --arg_int ARG_INT [--arg_float ARG_FLOAT]
-    
-    options:
-      -h, --help            show this help message and exit
-      --arg_int ARG_INT     [int]
-      --arg_float ARG_FLOAT
-                            [float] default: 0.1
-    </pre>
-</details>
+
+<!-- termynal -->
+```
+$ python my_app.py -h
+usage: MyApp [-h] --arg_int ARG_INT [--arg_float ARG_FLOAT]
+
+options:
+  -h, --help            show this help message and exit
+  --arg_int ARG_INT     [int]
+  --arg_float ARG_FLOAT
+                        [float] default: 0.1
+```
 
 ## Examples
 
