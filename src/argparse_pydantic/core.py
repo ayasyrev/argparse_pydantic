@@ -33,8 +33,10 @@ ARG_KEYWORDS = (
 
 
 if sys.version_info < (3, 10):  # pragma: no cover
+
     def is_union(tp: type[Any] | None) -> bool:
         return get_origin(tp) is Union
+
 else:
     from types import UnionType
 
@@ -86,7 +88,11 @@ def get_field_type(field_info: FieldInfo) -> Type:
 
 def parse_field_kwargs(json_schema_extra: dict[str, Any]) -> dict[str, Any]:
     """parse json_schema_extra for argparse add_argument args"""
-    field_kwargs = {key: val for key, val in json_schema_extra.items() if key in ARG_KEYWORDS and val is not None}
+    field_kwargs = {
+        key: val
+        for key, val in json_schema_extra.items()
+        if key in ARG_KEYWORDS and val is not None
+    }
     if "flag" in field_kwargs:
         field_kwargs["flag"] = process_flag(field_kwargs["flag"])
     return field_kwargs
@@ -104,7 +110,9 @@ def add_field_arg(
     kwargs = argument_kwargs(
         help=field_info.description,
         required=field_info.is_required(),
-        default=field_info.default if field_info.default is not PydanticUndefined else None,
+        default=field_info.default
+        if field_info.default is not PydanticUndefined
+        else None,
         type=get_field_type(field_info),
     )
 
@@ -168,7 +176,9 @@ def add_args_from_model(
 ) -> argparse.ArgumentParser:
     """add args from model to parser"""
     for field_name, field_info in model.model_fields.items():
-        add_field_arg(parser, field_name, field_info, undefined_positional, help_def_type)
+        add_field_arg(
+            parser, field_name, field_info, undefined_positional, help_def_type
+        )
     return parser
 
 
