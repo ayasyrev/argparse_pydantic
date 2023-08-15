@@ -1,0 +1,15 @@
+# result for run example_03_help with args: -h
+# stdout
+usage: name [-h] [--arg_1 ARG_1] [-s ARG_2] [-f ARG_3]
+
+example prog
+
+options:
+  -h, --help            show this help message and exit
+  --arg_1 ARG_1         argument 1, int
+  -s ARG_2, --arg_2 ARG_2
+                        string arg, can be used with short flag -s
+  -f ARG_3, --arg_3 ARG_3
+
+nothing done, just example...
+# stderr

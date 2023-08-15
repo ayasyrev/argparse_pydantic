@@ -1,0 +1,6 @@
+# result for run example_03_help with args: 
+# stdout
+0
+
+0.0
+# stderr

@@ -1,0 +1,6 @@
+# result for run example_03_help with args: --arg_1, 10
+# stdout
+10
+
+0.0
+# stderr

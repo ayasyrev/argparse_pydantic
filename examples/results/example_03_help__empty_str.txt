@@ -1,0 +1,5 @@
+# result for run example_03_help with args: ""
+# stdout
+# stderr
+usage: name [-h] [--arg_1 ARG_1] [-s ARG_2] [-f ARG_3]
+name: error: unrecognized arguments: ""
