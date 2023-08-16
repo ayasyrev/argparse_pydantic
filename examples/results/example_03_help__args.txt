@@ -1,0 +1,9 @@
+# args for run
+# name: args - space delimited
+help: --help
+no_args:
+empty_str: ""
+short_flag_help: -h
+
+positional: cl_arg
+optional: --arg_1 10

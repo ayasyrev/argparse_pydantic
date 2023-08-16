@@ -18,5 +18,6 @@ if __name__ == "__main__":
     cfg: AppCfg = parse_args(AppCfg)
     # now we got object with autocompletion at ide.
     # if you want to play with config at jupyter notebook: import AppCfg.
-    print(cfg)
-    assert cfg == AppCfg()
+    print(f"{cfg.arg_1=}")
+    print(f"{cfg.arg_2=}")
+    print(f"{cfg.arg_3=}")

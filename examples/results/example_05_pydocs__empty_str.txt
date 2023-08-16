@@ -1,0 +1,6 @@
+# result for run example_05_pydocs with args: ""
+# stdout
+cfg.filename='""'
+cfg.count=None
+cfg.verbose=False
+# stderr

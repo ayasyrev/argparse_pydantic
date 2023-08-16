@@ -1,0 +1,6 @@
+# result for run example_01_simple with args: 
+# stdout
+cfg.arg_1=0
+cfg.arg_2=0.1
+cfg.arg_3='string'
+# stderr
