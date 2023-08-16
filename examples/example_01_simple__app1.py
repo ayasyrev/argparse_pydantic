@@ -1,5 +1,4 @@
 # Basic example - create base config for you app with typed config based on pydantic.
-
 from pydantic import BaseModel
 
 from argparse_pydantic.app import app
