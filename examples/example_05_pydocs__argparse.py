@@ -19,8 +19,8 @@ parser.add_argument("-v", "--verbose", action="store_true")  # on/off flag
 
 if __name__ == "__main__":
     # parse arguments.
-    cfg = parser.parse_args()
-    # we got Namespace object.
-    print(f"{cfg.filename=}")
-    print(f"{cfg.count=}")
-    print(f"{cfg.verbose=}")
+    args = parser.parse_args()
+    # args is Namespace object.
+    print(f"filename={args.filename}")
+    print(f"count={args.count}")
+    print(f"verbose={args.verbose}")

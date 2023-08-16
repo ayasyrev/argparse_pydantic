@@ -11,7 +11,7 @@ parser.add_argument("--arg_3", type=str, default="string")
 
 if __name__ == "__main__":
     # parse arguments as usual. We got Namespace without typing
-    cfg = parser.parse_args()
-    print(f"{cfg.arg_1=}")
-    print(f"{cfg.arg_2=}")
-    print(f"{cfg.arg_3=}")
+    args = parser.parse_args()
+    print(f"arg_1={args.arg_1}")
+    print(f"arg_2={args.arg_2}")
+    print(f"arg_3={args.arg_3}")

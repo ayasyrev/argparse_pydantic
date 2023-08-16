@@ -17,8 +17,8 @@ parser.add_argument("-f", "--arg_3", type=float, default=0.0)
 
 
 if __name__ == "__main__":
-    cfg = parser.parse_args()
-    # cfg is Namespace object
-    print(f"{cfg.arg_1=}")
-    print(f"{cfg.arg_2=}")
-    print(f"{cfg.arg_3=}")
+    args = parser.parse_args()
+    # args is Namespace object
+    print(f"arg_1={args.arg_1}")
+    print(f"arg_2={args.arg_2}")
+    print(f"arg_3={args.arg_3}")

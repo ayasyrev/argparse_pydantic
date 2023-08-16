@@ -6,11 +6,7 @@ from typing import Optional
 
 from pydantic import BaseModel, Field
 
-from argparse_pydantic.core import (
-    add_args_from_model,
-    argument_kwargs,
-    create_model_obj,
-)
+from argparse_pydantic import add_args_from_model, argument_kwargs, create_model_obj
 
 
 # Config for our App
@@ -49,6 +45,6 @@ if __name__ == "__main__":
     cfg: AppCfg = create_model_obj(AppCfg, args)
     # now we got object with autocompletion at ide.
     # if you want to play with config at jupyter notebook: import AppCfg.
-    print(f"{cfg.filename=}")
-    print(f"{cfg.count=}")
-    print(f"{cfg.verbose=}")
+    print(f"filename={cfg.filename}")
+    print(f"count={cfg.count}")
+    print(f"verbose={cfg.verbose}")
