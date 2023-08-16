@@ -6,7 +6,11 @@ from typing import Optional
 
 from pydantic import BaseModel, Field
 
-from argparse_pydantic.core import add_args_from_model, argument_kwargs, create_model_obj
+from argparse_pydantic.core import (
+    add_args_from_model,
+    argument_kwargs,
+    create_model_obj,
+)
 
 
 # Config for our App
@@ -16,14 +20,13 @@ class AppCfg(BaseModel):
         default=None,
         json_schema_extra=argument_kwargs(
             flag="-c",
-        )
+        ),
     )  # option that takes a value
     verbose: bool = Field(
         default=False,
         json_schema_extra=argument_kwargs(
-            flag="-v",
-            action="store_true"
-        )  # on/off flag
+            flag="-v", action="store_true"
+        ),  # on/off flag
     )
 
 
