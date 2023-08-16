@@ -1,6 +1,6 @@
 # result for run example_03_help with args: --arg_1, 10
 # stdout
-cfg.arg_1=10
-cfg.arg_2=''
-cfg.arg_3=0.0
+arg_1=10
+arg_2=
+arg_3=0.0
 # stderr
