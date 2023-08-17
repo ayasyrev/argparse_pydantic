@@ -73,6 +73,7 @@ def app(
             func(cfg)
 
         return parse_and_run
+
     return create_app
 
 
@@ -163,8 +164,10 @@ class App:
             self.main_func(cfg)
 
 
-def run(func: Callable[[Type[Any]], None], parser_cfg: ArgumentParserCfg = None) -> None:
+def run(
+    func: Callable[[Type[Any]], None], parser_cfg: ArgumentParserCfg = None
+) -> None:
     """Parse command line arguments and run function"""
     app = App(parser_cfg=parser_cfg)
     app.main(func)
-    app()    
+    app()
