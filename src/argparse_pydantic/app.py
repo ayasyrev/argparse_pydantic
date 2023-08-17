@@ -80,8 +80,6 @@ def app(
 class App:
     subparsers: argparse.Action | None = None
     main_func: Callable[[Type[Any]], None]
-    commands: dict[str, Callable[[Type[Any]], None]]
-    configs: dict[str, Type[Any]]
     main_cfg: BaseModel
     parse_and_run: Callable[[Optional[Sequence[str]]], None]
 
@@ -104,70 +102,63 @@ class App:
     ):
         if parents is None:
             parents = []
-        if parser_cfg is None:
-            parser_cfg = ArgumentParserCfg(
-                prog=prog,
-                usage=usage,
-                description=description,
-                epilog=epilog,
-                parents=parents,
-                formatter_class=formatter_class,
-                prefix_chars=prefix_chars,
-                fromfile_prefix_chars=fromfile_prefix_chars,
-                argument_default=argument_default,
-                conflict_handler=conflict_handler,
-                add_help=add_help,
-                allow_abbrev=allow_abbrev,
-                exit_on_error=exit_on_error,
-            )
-        self.parser = create_parser(parser_cfg)
+        self.parser_cfg = parser_cfg or ArgumentParserCfg(
+            prog=prog,
+            usage=usage,
+            description=description,
+            epilog=epilog,
+            parents=parents,
+            formatter_class=formatter_class,
+            prefix_chars=prefix_chars,
+            fromfile_prefix_chars=fromfile_prefix_chars,
+            argument_default=argument_default,
+            conflict_handler=conflict_handler,
+            add_help=add_help,
+            allow_abbrev=allow_abbrev,
+            exit_on_error=exit_on_error,
+        )
+        self.commands: dict[str, Callable[[Type[Any]], None]] = {}
+        self.configs: dict[str, Type[Any]] = {}
+        # self.parser = create_parser(parser_cfg)
 
     def main(self, func: Callable[[Type[Any]], None]):
-        params = get_params(func)
-        app_cfg = params[0]
-        add_args_from_model(self.parser, app_cfg)
-        self.main_func = func
-        self.main_cfg = app_cfg
+        self.commands["main"] = func
+        self.configs["main"] = get_params(func)[0]
 
     def command(self, func: Callable[[Type[Any]], None]):
-        command_name = func.__name__
-        if self.subparsers is None:
-            self.subparsers = self.parser.add_subparsers(
-                title="Commands", help="Available commands."
-            )
-            self.commands = {}
-            self.configs = {}
-        self.commands[command_name] = func
-        help = getdoc(func)  # pylint: disable=redefined-builtin
-        if help is not None:
-            help = help.split("Args", maxsplit=1)[0].strip()
-        command_parser = self.subparsers.add_parser(
-            command_name,
-            help=help,
-            description=help,
-        )
-        command_parser.set_defaults(command=command_name)
-
-        params = get_params(func)
-        app_cfg = params[0]
-        self.configs[command_name] = app_cfg
-
-        add_args_from_model(command_parser, app_cfg)
+        self.commands[func.__name__] = func
+        self.configs[func.__name__] = get_params(func)[0]
 
     def __call__(self, args: Optional[Sequence[str]] = None) -> None:
-        parsed_args = self.parser.parse_args(args)
-        if hasattr(parsed_args, "command"):
-            cfg = create_model_obj(self.configs[parsed_args.command], parsed_args)
-            self.commands[parsed_args.command](cfg)
-        else:
-            cfg = create_model_obj(self.main_cfg, parsed_args)
-            self.main_func(cfg)
+        parser = create_parser(self.parser_cfg)
+        add_args_from_model(parser, self.configs["main"])
+        if len(self.commands) > 1:
+            subparsers = parser.add_subparsers(
+                title="Commands", help="Available commands."
+            )
+            commands = [name for name in self.commands if name != "main"]
+            for command_name in commands:
+                cmd_help = getdoc(self.commands[command_name])
+                if cmd_help is not None:
+                    cmd_help = cmd_help.split("Args", maxsplit=1)[0].strip()
+                command_parser = subparsers.add_parser(
+                    command_name,
+                    help=cmd_help,
+                    description=cmd_help,
+                )
+                command_parser.set_defaults(command=command_name)
+                add_args_from_model(command_parser, self.configs[command_name])
+
+        parsed_args = parser.parse_args(args)
+        command = getattr(parsed_args, "command", "main")
+        cfg = create_model_obj(self.configs[command], parsed_args)
+        self.commands[command](cfg)
 
 
 def run(
     func: Callable[[Type[Any]], None], parser_cfg: ArgumentParserCfg = None
 ) -> None:
     """Parse command line arguments and run function"""
-    app = App(parser_cfg=parser_cfg)
-    app.main(func)
-    app()
+    run_app = App(parser_cfg=parser_cfg)
+    run_app.main(func)
+    run_app()
