@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import argparse
 from argparse import ArgumentParser, HelpFormatter
-from functools import wraps
+from functools import partial, wraps
 from inspect import getdoc, signature
 from typing import Any, Callable, List, Optional, Sequence, Type
 
@@ -57,9 +57,9 @@ def app(
             allow_abbrev=allow_abbrev,
             exit_on_error=exit_on_error,
         )
-    # """Create app.
-    # Simple variant - expecting function with one argument"""
 
+    # Create app.
+    # Simple variant - expecting function with one argument.
     def create_app(func: Callable[[Type[Any]], None]):
         params = get_params(func)
         app_cfg = params[0]
@@ -119,15 +119,19 @@ class App:
         )
         self.commands: dict[str, Callable[[Type[Any]], None]] = {}
         self.configs: dict[str, Type[Any]] = {}
-        # self.parser = create_parser(parser_cfg)
 
     def main(self, func: Callable[[Type[Any]], None]):
         self.commands["main"] = func
         self.configs["main"] = get_params(func)[0]
 
-    def command(self, func: Callable[[Type[Any]], None]):
-        self.commands[func.__name__] = func
-        self.configs[func.__name__] = get_params(func)[0]
+    def command(self, func: Callable[[Type[Any]], None] = None, *, name: str = ""):
+        if func is None:
+            return partial(self.command, name=name)
+        if isinstance(func, str):
+            return partial(self.command, name=func)
+
+        self.commands[name or func.__name__] = func
+        self.configs[name or func.__name__] = get_params(func)[0]
 
     def __call__(self, args: Optional[Sequence[str]] = None) -> None:
         parser = create_parser(self.parser_cfg)
