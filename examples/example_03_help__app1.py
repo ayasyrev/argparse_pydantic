@@ -1,7 +1,7 @@
 # Example 3 - create config with helps.
 from pydantic import BaseModel, Field
 
-from argparse_pydantic import ArgumentParserCfg, argument_kwargs, parse_args
+from argparse_pydantic import ArgumentParserCfg, argument_kwargs
 from argparse_pydantic.app import app
 
 

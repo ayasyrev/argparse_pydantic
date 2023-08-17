@@ -161,3 +161,10 @@ class App:
         else:
             cfg = create_model_obj(self.main_cfg, parsed_args)
             self.main_func(cfg)
+
+
+def run(func: Callable[[Type[Any]], None], parser_cfg: ArgumentParserCfg = None) -> None:
+    """Parse command line arguments and run function"""
+    app = App(parser_cfg=parser_cfg)
+    app.main(func)
+    app()    

@@ -2,15 +2,13 @@
 from pydantic import BaseModel, Field
 
 from argparse_pydantic import ArgumentParserCfg, argument_kwargs
-from argparse_pydantic.app import App
+from argparse_pydantic.app import run
 
 
 # Create config for parser
 parser_cfg = ArgumentParserCfg(
     prog="name", description="example prog", epilog="nothing done, just example..."
 )
-
-app = App(parser_cfg=parser_cfg)
 
 
 # Create config for App
@@ -32,7 +30,6 @@ class AppCfg(BaseModel):
     )
 
 
-@app.main
 def my_app(
     cfg: AppCfg,
 ):
@@ -43,4 +40,4 @@ def my_app(
 
 
 if __name__ == "__main__":
-    app()
+    run(my_app, parser_cfg=parser_cfg)

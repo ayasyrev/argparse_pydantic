@@ -1,7 +1,7 @@
 # Basic example - create base config for you app with typed config based on pydantic.
 from pydantic import BaseModel
 
-from argparse_pydantic.app import app
+from argparse_pydantic.app import run
 
 
 # Create config for App as BaseModel
@@ -11,7 +11,6 @@ class AppCfg(BaseModel):
     arg_3: str = "string"
 
 
-@app()
 def my_app(
     cfg: AppCfg,
 ):
@@ -22,4 +21,4 @@ def my_app(
 
 
 if __name__ == "__main__":
-    my_app()  # pylint: disable=no-value-for-parameter
+    run(my_app)
