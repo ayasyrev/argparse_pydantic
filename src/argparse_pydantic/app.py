@@ -131,6 +131,12 @@ class App:
 
     def __call__(self, args: Optional[Sequence[str]] = None) -> None:
         parser = create_parser(self.parser_cfg)
+        if len(self.commands) == 1:
+            if not hasattr(self.commands, "main"):
+                command_name = next(iter(self.commands))
+                main_cmd = self.commands.pop(command_name)
+                self.commands["main"] = main_cmd
+                self.configs["main"] = self.configs.pop(command_name)
         add_args_from_model(parser, self.configs["main"])
         if len(self.commands) > 1:
             subparsers = parser.add_subparsers(
