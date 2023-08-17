@@ -168,12 +168,17 @@ class App:
 def run(
     func: Callable[[BaseModel], None],
     *args: Callable[[BaseModel], None],
-    parser_cfg: ArgumentParserCfg = None,
+    **kwargs: Callable[[BaseModel], None],
 ) -> None:
-    """Parse command line arguments and run function"""
+    """Parse command line arguments and run function.
+    Pass ArgumentParser Cfg as `parser_cfg=parser_cfg`.
+    Pass command functions as arguments or `command=func`."""
+    parser_cfg = kwargs.pop("parser_cfg", None)
     run_app = App(parser_cfg=parser_cfg)
     run_app.main(func)
     if args:
         for arg in args:
             run_app.command(arg)
+    for command_name, func in kwargs.items():
+        run_app.command(func, name=command_name)
     run_app()
