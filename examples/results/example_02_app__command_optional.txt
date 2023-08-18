@@ -1,0 +1,5 @@
+# result for run example_02_app with args: cmd, --cmd_1, 10
+# stdout
+cmd_1=10
+verbose=False
+# stderr

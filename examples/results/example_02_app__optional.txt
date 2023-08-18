@@ -1,0 +1,6 @@
+# result for run example_02_app with args: --arg_1, 10
+# stdout
+arg_1=10
+arg_2=0.1
+arg_3=string
+# stderr
