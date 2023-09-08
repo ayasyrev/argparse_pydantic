@@ -135,11 +135,7 @@ def add_field_arg(
         else:
             kwargs["required"] = True
 
-    if "action" in kwargs:
-        kwargs.pop("type", None)
-        validate_action(kwargs["action"], kwargs.get("default", None))
-        if kwargs["action"] not in ("count", "store_const"):
-            kwargs.pop("default", None)
+    process_kwargs_action(kwargs)
 
     if help_def_type:
         field_type = get_field_type(field_info)
@@ -148,7 +144,41 @@ def add_field_arg(
         else:
             default = f"default: {field_info.default}"
         kwargs["help"] = kwargs.get("help", "") + f" [{field_type.__name__}] {default}"
+
+    dest = kwargs.get("dest", None)
+    if dest and not check_dest_ok(dest, parser):
+        return
+    if flags:
+        flags = check_flags(flags, parser)
+        if not flags:
+            return
     parser.add_argument(*flags, **kwargs)
+
+
+def check_dest_ok(dest: str, parser: argparse.ArgumentParser) -> bool:
+    """check dest not exist"""
+    if dest in [action.dest for action in parser._actions]:
+        print(f"dest {dest} exists!")
+        return False
+    return True
+
+
+def check_flags(flags: list[str], parser: argparse.ArgumentParser) -> list[str]:
+    """check and filter flags - return only valid flags"""
+    if flags:
+        dest_list = [action.dest for action in parser._actions]
+        exists = [
+            flag
+            for flag in flags
+            if flag in parser._option_string_actions or flag.strip("-") in dest_list
+        ]
+        if exists:
+            print(f"flag {exists} exists!")
+            flags = [flag for flag in flags if flag not in exists]
+            if len(flags) == 1 and len(flags[0]) == 2:  # only short flag
+                return []
+        return flags
+    return []
 
 
 def process_flag(flag) -> Optional[str]:
@@ -158,6 +188,15 @@ def process_flag(flag) -> Optional[str]:
     if flag.startswith("-") and len(flag) == 2:
         return flag
     return None
+
+
+def process_kwargs_action(kwargs: dict[str, Any]) -> None:
+    """process kwargs action"""
+    if "action" in kwargs:
+        kwargs.pop("type", None)
+        validate_action(kwargs["action"], kwargs.get("default", None))
+        if kwargs["action"] not in ("count", "store_const"):
+            kwargs.pop("default", None)
 
 
 def validate_action(action: str, default: Optional[Type]) -> None:
@@ -170,15 +209,23 @@ def validate_action(action: str, default: Optional[Type]) -> None:
 
 def add_args_from_model(
     parser: argparse.ArgumentParser,
-    model: BaseModel,
+    model: BaseModel | list[BaseModel],
     undefined_positional: bool = True,
     help_def_type: bool = False,
+    create_group: bool = False,
 ) -> argparse.ArgumentParser:
-    """add args from model to parser"""
-    for field_name, field_info in model.model_fields.items():
-        add_field_arg(
-            parser, field_name, field_info, undefined_positional, help_def_type
-        )
+    """add args from model or list of models to parser"""
+    if not isinstance(model, list):
+        model = [model]
+    for item in model:  # if same name check at add_field_arg
+        if create_group:
+            arg_group = parser.add_argument_group(item.__name__)
+        else:
+            arg_group = parser
+        for field_name, field_info in item.model_fields.items():
+            add_field_arg(
+                arg_group, field_name, field_info, undefined_positional, help_def_type
+            )
     return parser
 
 

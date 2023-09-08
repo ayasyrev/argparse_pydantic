@@ -12,10 +12,10 @@ from argparse_pydantic.core import add_args_from_model, create_model_obj, create
 from argparse_pydantic.helpers import ArgumentParserCfg
 
 
-def get_params(func: Callable[..., Any]) -> List[BaseModel]:
+def get_params(func: Callable[..., Any]) -> List[signature.Parameter]:
     sig = signature(func)
     params = [
-        param.annotation
+        param
         for param in sig.parameters.values()
         if issubclass(param.annotation, BaseModel)
     ]
@@ -62,7 +62,7 @@ def app(
     # Simple variant - expecting function with one argument.
     def create_app(func: Callable[[Type[Any]], None]):
         params = get_params(func)
-        app_cfg = params[0]
+        app_cfg = params[0].annotation
 
         @wraps(func)
         def parse_and_run(args: Optional[Sequence[str]] = None) -> None:
@@ -122,7 +122,7 @@ class App:
 
     def main(self, func: Callable[[Type[Any]], None]):
         self.commands["main"] = func
-        self.configs["main"] = get_params(func)[0]
+        self.configs["main"] = get_params(func)[0].annotation
 
     def command(self, func: Callable[[Type[Any]], None] = None, *, name: str = ""):
         if func is None:
@@ -131,7 +131,7 @@ class App:
             return partial(self.command, name=func)
 
         self.commands[name or func.__name__] = func
-        self.configs[name or func.__name__] = get_params(func)[0]
+        self.configs[name or func.__name__] = get_params(func)[0].annotation
 
     def __call__(self, args: Optional[Sequence[str]] = None) -> None:
         parser = create_parser(self.parser_cfg)
@@ -179,6 +179,6 @@ def run(
     if args:
         for arg in args:
             run_app.command(arg)
-    for command_name, func in kwargs.items():
-        run_app.command(func, name=command_name)
+    for command_name, cmd_func in kwargs.items():
+        run_app.command(cmd_func, name=command_name)
     run_app()
