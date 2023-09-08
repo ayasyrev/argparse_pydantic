@@ -99,6 +99,7 @@ class App:
         add_help: bool = True,
         allow_abbrev: bool = True,
         exit_on_error: bool = True,
+        group_cfgs: bool = False,
     ):
         if parents is None:
             parents = []
@@ -118,11 +119,12 @@ class App:
             exit_on_error=exit_on_error,
         )
         self.commands: dict[str, Callable[[Type[Any]], None]] = {}
-        self.configs: dict[str, Type[Any]] = {}
+        self.configs: dict[str, List[BaseModel]] = {}
+        self.group_cfgs = group_cfgs
 
     def main(self, func: Callable[[Type[Any]], None]):
         self.commands["main"] = func
-        self.configs["main"] = get_params(func)[0].annotation
+        self.configs["main"] = [param.annotation for param in get_params(func)]
 
     def command(self, func: Callable[[Type[Any]], None] = None, *, name: str = ""):
         if func is None:
@@ -131,7 +133,9 @@ class App:
             return partial(self.command, name=func)
 
         self.commands[name or func.__name__] = func
-        self.configs[name or func.__name__] = get_params(func)[0].annotation
+        self.configs[name or func.__name__] = [
+            param.annotation for param in get_params(func)
+        ]
 
     def __call__(self, args: Optional[Sequence[str]] = None) -> None:
         parser = create_parser(self.parser_cfg)
@@ -141,7 +145,7 @@ class App:
                 main_cmd = self.commands.pop(command_name)
                 self.commands["main"] = main_cmd
                 self.configs["main"] = self.configs.pop(command_name)
-        add_args_from_model(parser, self.configs["main"])
+        add_args_from_model(parser, self.configs["main"], create_group=self.group_cfgs)
         if len(self.commands) > 1:
             subparsers = parser.add_subparsers(
                 title="Commands", help="Available commands."
@@ -157,12 +161,16 @@ class App:
                     description=cmd_help,
                 )
                 command_parser.set_defaults(command=command_name)
-                add_args_from_model(command_parser, self.configs[command_name])
+                add_args_from_model(
+                    command_parser,
+                    self.configs[command_name],
+                    create_group=self.group_cfgs,
+                )
 
         parsed_args = parser.parse_args(args)
         command = getattr(parsed_args, "command", "main")
-        cfg = create_model_obj(self.configs[command], parsed_args)
-        self.commands[command](cfg)
+        cfgs = [create_model_obj(model, parsed_args) for model in self.configs[command]]
+        self.commands[command](*cfgs)
 
 
 def run(
