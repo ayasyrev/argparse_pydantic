@@ -4,7 +4,7 @@ import argparse
 from argparse import ArgumentParser, HelpFormatter
 from functools import partial, wraps
 from inspect import getdoc, signature
-from typing import Any, Callable, List, Optional, Sequence, Type
+from typing import Any, Callable, List, NamedTuple, Optional, Sequence, Tuple, Type
 
 from pydantic import BaseModel
 
@@ -12,15 +12,26 @@ from argparse_pydantic.core import add_args_from_model, create_model_obj, create
 from argparse_pydantic.helpers import ArgumentParserCfg
 
 
-def get_params(func: Callable[..., Any]) -> List[signature.Parameter]:
+class Arg(NamedTuple):
+    name: str
+    model: BaseModel
+
+
+def get_args(func: Callable[..., Any]) -> List[Arg]:
+    """process func parameters, return tuple (name, BaseModel)"""
     sig = signature(func)
     params = [
-        param
+        Arg(param.name, param.annotation)
         for param in sig.parameters.values()
         if issubclass(param.annotation, BaseModel)
     ]
     assert params
     return params
+
+
+def get_models(args: List[Arg]) -> List[BaseModel]:
+    """get list models from args"""
+    return [arg.model for arg in args]
 
 
 def app(
@@ -39,6 +50,7 @@ def app(
     allow_abbrev: bool = True,
     exit_on_error: bool = True,
 ):
+    """create app from function"""
     if parents is None:
         parents = []
     if parser_cfg is None:
@@ -61,8 +73,8 @@ def app(
     # Create app.
     # Simple variant - expecting function with one argument.
     def create_app(func: Callable[[Type[Any]], None]):
-        params = get_params(func)
-        app_cfg = params[0].annotation
+        args = get_args(func)
+        app_cfg = args[0].model
 
         @wraps(func)
         def parse_and_run(args: Optional[Sequence[str]] = None) -> None:
@@ -119,12 +131,12 @@ class App:
             exit_on_error=exit_on_error,
         )
         self.commands: dict[str, Callable[[Type[Any]], None]] = {}
-        self.configs: dict[str, List[BaseModel]] = {}
+        self.configs: dict[str, List[Arg]] = {}
         self.group_cfgs = group_cfgs
 
     def main(self, func: Callable[[Type[Any]], None]):
         self.commands["main"] = func
-        self.configs["main"] = [param.annotation for param in get_params(func)]
+        self.configs["main"] = get_args(func)
 
     def command(self, func: Callable[[Type[Any]], None] = None, *, name: str = ""):
         if func is None:
@@ -133,9 +145,7 @@ class App:
             return partial(self.command, name=func)
 
         self.commands[name or func.__name__] = func
-        self.configs[name or func.__name__] = [
-            param.annotation for param in get_params(func)
-        ]
+        self.configs[name or func.__name__] = get_args(func)
 
     def __call__(self, args: Optional[Sequence[str]] = None) -> None:
         parser = create_parser(self.parser_cfg)
@@ -145,7 +155,7 @@ class App:
                 main_cmd = self.commands.pop(command_name)
                 self.commands["main"] = main_cmd
                 self.configs["main"] = self.configs.pop(command_name)
-        add_args_from_model(parser, self.configs["main"], create_group=self.group_cfgs)
+        add_args_from_model(parser, get_models(self.configs["main"]), create_group=self.group_cfgs)
         if len(self.commands) > 1:
             subparsers = parser.add_subparsers(
                 title="Commands", help="Available commands."
@@ -163,14 +173,17 @@ class App:
                 command_parser.set_defaults(command=command_name)
                 add_args_from_model(
                     command_parser,
-                    self.configs[command_name],
+                    get_models(self.configs[command_name]),
                     create_group=self.group_cfgs,
                 )
 
         parsed_args = parser.parse_args(args)
         command = getattr(parsed_args, "command", "main")
-        cfgs = [create_model_obj(model, parsed_args) for model in self.configs[command]]
-        self.commands[command](*cfgs)
+        cfgs = {
+            name: create_model_obj(model, parsed_args)
+            for name, model in self.configs[command]
+        }
+        self.commands[command](**cfgs)
 
 
 def run(
