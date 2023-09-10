@@ -157,7 +157,9 @@ def add_field_arg(
 
 def check_dest_ok(dest: str, parser: argparse.ArgumentParser) -> bool:
     """check dest not exist"""
-    if dest in [action.dest for action in parser._actions]:
+    if dest in [
+        action.dest for action in parser._actions  # pylint: disable=protected-access
+    ]:
         print(f"dest {dest} exists!")
         return False
     return True
@@ -166,11 +168,15 @@ def check_dest_ok(dest: str, parser: argparse.ArgumentParser) -> bool:
 def check_flags(flags: list[str], parser: argparse.ArgumentParser) -> list[str]:
     """check and filter flags - return only valid flags"""
     if flags:
-        dest_list = [action.dest for action in parser._actions]
+        dest_list = [
+            action.dest
+            for action in parser._actions  # pylint: disable=protected-access
+        ]
         exists = [
             flag
             for flag in flags
-            if flag in parser._option_string_actions or flag.strip("-") in dest_list
+            if flag in parser._option_string_actions  # pylint: disable=protected-access
+            or flag.strip("-") in dest_list  # noqa: W503
         ]
         if exists:
             print(f"flag {exists} exists!")

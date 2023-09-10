@@ -4,7 +4,7 @@ import argparse
 from argparse import ArgumentParser, HelpFormatter
 from functools import partial, wraps
 from inspect import getdoc, signature
-from typing import Any, Callable, List, NamedTuple, Optional, Sequence, Tuple, Type
+from typing import Any, Callable, List, NamedTuple, Optional, Sequence, Type
 
 from pydantic import BaseModel
 
@@ -155,7 +155,9 @@ class App:
                 main_cmd = self.commands.pop(command_name)
                 self.commands["main"] = main_cmd
                 self.configs["main"] = self.configs.pop(command_name)
-        add_args_from_model(parser, get_models(self.configs["main"]), create_group=self.group_cfgs)
+        add_args_from_model(
+            parser, get_models(self.configs["main"]), create_group=self.group_cfgs
+        )
         if len(self.commands) > 1:
             subparsers = parser.add_subparsers(
                 title="Commands", help="Available commands."
