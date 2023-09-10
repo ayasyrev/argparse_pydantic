@@ -176,7 +176,7 @@ def check_flags(flags: list[str], parser: argparse.ArgumentParser) -> list[str]:
             flag
             for flag in flags
             if flag in parser._option_string_actions  # pylint: disable=protected-access
-            or flag.strip("-") in dest_list  # noqa: W503
+            or flag.strip("-") in dest_list
         ]
         if exists:
             print(f"flag {exists} exists!")
