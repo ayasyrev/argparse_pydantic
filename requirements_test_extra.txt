@@ -1,3 +1,2 @@
 nox
-cli-result
 coverage[toml]
