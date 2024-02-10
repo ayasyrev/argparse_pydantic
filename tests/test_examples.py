@@ -1,7 +1,5 @@
 import pytest
-
 from cli_result.core import Cfg, get_examples, run_check_example
-
 
 cfg = Cfg(examples_path="examples")
 examples = get_examples(cfg=cfg)

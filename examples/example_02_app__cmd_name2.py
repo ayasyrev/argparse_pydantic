@@ -3,7 +3,6 @@ from pydantic import BaseModel
 
 from argparse_pydantic.app import App
 
-
 app = App()
 
 

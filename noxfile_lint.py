@@ -1,6 +1,5 @@
 import nox
 
-
 locations = "src/argparse_pydantic", "tests", "noxfile.py"
 
 

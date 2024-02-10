@@ -4,7 +4,6 @@ from pydantic import BaseModel, Field
 from argparse_pydantic import ArgumentParserCfg, argument_kwargs
 from argparse_pydantic.app import app
 
-
 # Create config for parser
 parser_cfg = ArgumentParserCfg(
     prog="name", description="example prog", epilog="nothing done, just example..."

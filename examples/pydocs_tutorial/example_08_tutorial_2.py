@@ -9,7 +9,6 @@ from argparse_pydantic import add_args_from_model, create_model_obj
 from argparse_pydantic.core import argument_kwargs
 from argparse_pydantic.test_tools import parsers_equal_typed
 
-
 # create parser
 parser = argparse.ArgumentParser()
 parser.add_argument("square", help="display a square of a given number", type=int)

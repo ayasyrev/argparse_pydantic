@@ -110,9 +110,9 @@ def add_field_arg(
     kwargs = argument_kwargs(
         help=field_info.description,
         required=field_info.is_required(),
-        default=field_info.default
-        if field_info.default is not PydanticUndefined
-        else None,
+        default=(
+            field_info.default if field_info.default is not PydanticUndefined else None
+        ),
         type=get_field_type(field_info),
     )
 
