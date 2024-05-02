@@ -4,8 +4,8 @@ from pydantic import BaseModel, Field
 
 from argparse_pydantic.core import (
     add_args_from_model,
-    argument_kwargs,
     create_model_obj,
+    argument_kwargs,
 )
 from argparse_pydantic.test_tools import (
     parsers_actions_diff,

@@ -3,11 +3,11 @@
 Config for argparse with pydantic model.
 
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/argparse_pydantic)](https://pypi.org/project/argparse_pydantic/)
-[![PyPI version](https://img.shields.io/pypi/v/argparse_pydantic?color=blue)](https://pypi.org/project/argparse_pydantic/)
-[![Tests](https://github.com/ayasyrev/argparse_pydantic/workflows/Tests/badge.svg)](https://github.com/ayasyrev/argparse_pydantic/actions?workflow=Tests)  [![Codecov](https://codecov.io/gh/ayasyrev/argparse_pydantic/branch/main/graph/badge.svg)](https://codecov.io/gh/ayasyrev/argparse_pydantic)
+![PyPI](https://img.shields.io/pypi/v/argparse_pydantic?color=blue)  
+[![Tests](https://github.com/ayasyrev/argparse_pydantic/workflows/Tests/badge.svg)](https://github.com/ayasyrev/argparse_pydantic/actions?workflow=Tests)  [![Codecov](https://codecov.io/gh/ayasyrev/argparse_pydantic/branch/main/graph/badge.svg)](https://codecov.io/gh/ayasyrev/argparse_pydantic)  
 
-Simple wrapper for python argparse.
-Use pydantic model for you app config.
+Simple wrapper for python argparse.  
+Use pydantic model for you app config.  
 It gives you typed config instead of default Namespace from argparse.
 
 Tested on python 3.7 - 3.11
@@ -16,7 +16,7 @@ WIP
 
 ## Install
 
-Install from pypi:
+Install from pypi:  
 
 `pip install argparse_pydantic`
 
@@ -26,7 +26,7 @@ Or install from github repo:
 
 ## Base use.
 
-We use python argparse to parse arguments from command line.
+We use python argparse to parse arguments from command line.  
 So, just create parser as usual:
 
 
@@ -58,7 +58,7 @@ parser = add_args_from_model(parser, AppCfg)
 
 So we got parser with arguments from config.
 
-It exactly like parser made classic way:
+It exactly like parser made classic way:  
 `parser.add_argument("echo")`
 
 Now we can use parser in you script usual way - `parser.parse_args()`
@@ -82,7 +82,7 @@ Parse command line as usual.
 args = parser.parse_args(["argument from command line"])
 ```
 
-When we parse command line, we got Namespace object.
+When we parse command line, we got Namespace object.  
 Bat we can convert it to config object.
 
 
@@ -98,7 +98,7 @@ Now we got  config with type checks / validation ont type hinting when use it at
 ```python
 cfg
 ```
-<details open> <summary>output</summary>
+<details open> <summary>output</summary>  
     <pre>AppCfg(echo='argument from command line')</pre>
 </details>
 
@@ -108,7 +108,7 @@ cfg
 ```python
 cfg.echo
 ```
-<details open> <summary>output</summary>
+<details open> <summary>output</summary>  
     <pre>'argument from command line'</pre>
 </details>
 
@@ -144,7 +144,7 @@ options:
 
 ### Add types and defaults values.
 
-And we can add type hints to help message from our config.
+And we can add type hints to help message from our config.  
 
 
 
@@ -172,4 +172,4 @@ options:
 
 ## Examples
 
-You can see examples at `examples` folder - Same examples as at python docs and tutorial for argparse.
+You can see examples at `examples` folder - Same examples as at python docs and tutorial for argparse.  

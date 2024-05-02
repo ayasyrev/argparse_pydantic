@@ -1,5 +1,0 @@
-# result for run example_05_pydocs with args:
-# stdout
-# stderr
-usage: ProgramName [-h] [-c COUNT] [-v] filename
-ProgramName: error: the following arguments are required: filename

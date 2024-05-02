@@ -9,7 +9,6 @@ class ArgumentParserCfg(BaseModel):
     """Config schema for argparse parser.
     Parameters same as at argparse.ArgumentParser.
     """
-
     prog: Optional[str] = None
     usage: Optional[str] = None
     description: Optional[str] = None

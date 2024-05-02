@@ -1,6 +1,0 @@
-# result for run example_03_help with args:
-# stdout
-arg_1=0
-arg_2=
-arg_3=0.0
-# stderr
