@@ -6,9 +6,8 @@ from typing import Optional
 
 from pydantic import BaseModel, Field
 
-from argparse_pydantic import add_args_from_model, create_model_obj, argument_kwargs
+from argparse_pydantic import add_args_from_model, argument_kwargs, create_model_obj
 from argparse_pydantic.test_tools import parsers_equal
-
 
 # create parser
 parser = argparse.ArgumentParser()
@@ -30,7 +29,7 @@ class AppCfg(BaseModel):  # pylint: disable=function-redefined
             flag="-v",
             help="increase output verbosity",
             action="store_true",
-        )
+        ),
     )
 
 
@@ -73,7 +72,7 @@ class AppCfg(BaseModel):  # pylint: disable=function-redefined
         json_schema_extra=argument_kwargs(
             flag="-v",
             help="increase output verbosity",
-        )
+        ),
     )
 
 
@@ -115,7 +114,7 @@ class AppCfg(BaseModel):  # pylint: disable=function-redefined
             flag="-v",
             help="increase output verbosity",
             choices=[0, 1, 2],
-        )
+        ),
     )
 
 
@@ -144,7 +143,7 @@ class AppCfg(BaseModel):  # pylint: disable=function-redefined
             flag="-v",
             help="increase output verbosity",
             action="count",
-        )
+        ),
     )
 
 
@@ -197,7 +196,7 @@ class AppCfg(BaseModel):  # pylint: disable=function-redefined
             flag="-v",
             help="increase output verbosity",
             action="count",
-        )
+        ),
     )
 
 
