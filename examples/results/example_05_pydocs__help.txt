@@ -1,0 +1,16 @@
+# result for run example_05_pydocs with args: --help
+# stdout
+usage: ProgramName [-h] [-c COUNT] [-v] filename
+
+What the program does
+
+positional arguments:
+  filename
+
+options:
+  -h, --help            show this help message and exit
+  -c COUNT, --count COUNT
+  -v, --verbose
+
+Text at the bottom of help
+# stderr

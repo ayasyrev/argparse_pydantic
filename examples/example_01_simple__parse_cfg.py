@@ -1,7 +1,8 @@
 # Basic example - create base config for you app with pydantic.
 # same as example_01_simple.py but parser created at parse_cfg function.
 from pydantic import BaseModel
-from argparse_pydantic.core import parse_args
+
+from argparse_pydantic import parse_args
 
 
 # Create config for App as pydantic BaseModel.
@@ -18,5 +19,6 @@ if __name__ == "__main__":
     cfg: AppCfg = parse_args(AppCfg)
     # now we got object with autocompletion at ide.
     # if you want to play with config at jupyter notebook: import AppCfg.
-    print(cfg)
-    assert cfg == AppCfg()
+    print(f"arg_1={cfg.arg_1}")
+    print(f"arg_2={cfg.arg_2}")
+    print(f"arg_3={cfg.arg_3}")

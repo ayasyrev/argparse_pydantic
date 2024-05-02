@@ -1,0 +1,6 @@
+# result for run example_05_pydocs with args: some_filename
+# stdout
+filename=some_filename
+count=None
+verbose=False
+# stderr

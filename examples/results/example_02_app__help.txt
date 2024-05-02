@@ -1,0 +1,15 @@
+# result for run example_02_app with args: --help
+# stdout
+usage: example_02_app.py [-h] [--arg_1 ARG_1] [--arg_2 ARG_2] [--arg_3 ARG_3]
+                         {cmd} ...
+
+options:
+  -h, --help     show this help message and exit
+  --arg_1 ARG_1
+  --arg_2 ARG_2
+  --arg_3 ARG_3
+
+Commands:
+  {cmd}          Available commands.
+    cmd          Command - simple command func
+# stderr
