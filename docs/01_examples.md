@@ -40,7 +40,7 @@ if __name__ == "__main__":
 
 ```
 </pre>
-It's exactly the same as: 
+It's exactly the same as:
 <pre>
 ```python
 # Basic example - create base config for you app with typed config based on pydantic.

@@ -158,7 +158,8 @@ def add_field_arg(
 def check_dest_ok(dest: str, parser: argparse.ArgumentParser) -> bool:
     """check dest not exist"""
     if dest in [
-        action.dest for action in parser._actions  # pylint: disable=protected-access
+        action.dest
+        for action in parser._actions  # pylint: disable=protected-access
     ]:
         print(f"dest {dest} exists!")
         return False

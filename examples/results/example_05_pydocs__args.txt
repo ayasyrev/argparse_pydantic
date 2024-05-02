@@ -7,4 +7,4 @@ short_flag_help: -h
 
 positional: some_filename
 optional: filename --count 10
-action_flag: filename -v 
+action_flag: filename -v

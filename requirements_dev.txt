@@ -1,7 +1,7 @@
-pre-commit
-nbmetaclean
 black
 black[jupyter]
 flake8
-mypy
 isort
+mypy
+nbmetaclean
+pre-commit
