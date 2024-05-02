@@ -10,7 +10,7 @@ Simple wrapper for python argparse.
 Use pydantic model for you app config.
 It gives you typed config instead of default Namespace from argparse.
 
-Tested on python 3.7 - 3.11
+Tested on python 3.8 - 3.12
 
 WIP
 
