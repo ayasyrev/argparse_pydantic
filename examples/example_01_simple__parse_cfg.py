@@ -1,6 +1,7 @@
 # Basic example - create base config for you app with pydantic.
 # same as example_01_simple.py but parser created at parse_cfg function.
 from pydantic import BaseModel
+
 from argparse_pydantic import parse_args
 
 

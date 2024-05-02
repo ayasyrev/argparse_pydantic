@@ -4,7 +4,6 @@
 # Core Functionality
 import argparse
 
-
 # create parser
 parser = argparse.ArgumentParser(
     prog="ProgramName",

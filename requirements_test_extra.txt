@@ -1,3 +1,2 @@
 coverage[toml]
-flake8
 nox

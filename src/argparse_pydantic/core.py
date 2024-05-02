@@ -110,9 +110,9 @@ def add_field_arg(
     kwargs = argument_kwargs(
         help=field_info.description,
         required=field_info.is_required(),
-        default=field_info.default
-        if field_info.default is not PydanticUndefined
-        else None,
+        default=(
+            field_info.default if field_info.default is not PydanticUndefined else None
+        ),
         type=get_field_type(field_info),
     )
 
@@ -158,7 +158,8 @@ def add_field_arg(
 def check_dest_ok(dest: str, parser: argparse.ArgumentParser) -> bool:
     """check dest not exist"""
     if dest in [
-        action.dest for action in parser._actions  # pylint: disable=protected-access
+        action.dest
+        for action in parser._actions  # pylint: disable=protected-access
     ]:
         print(f"dest {dest} exists!")
         return False

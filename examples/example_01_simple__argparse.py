@@ -1,7 +1,6 @@
 # Basic example - create base config for you app with typed config based on pydantic.
 import argparse
 
-
 # Result parser will be same as below
 parser = argparse.ArgumentParser()
 parser.add_argument("--arg_1", type=int, default=0)

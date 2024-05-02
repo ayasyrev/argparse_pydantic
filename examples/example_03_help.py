@@ -3,7 +3,6 @@ from pydantic import BaseModel, Field
 
 from argparse_pydantic import ArgumentParserCfg, argument_kwargs, parse_args
 
-
 # Create config for parser
 parser_cfg = ArgumentParserCfg(
     prog="name", description="example prog", epilog="nothing done, just example..."
