@@ -47,7 +47,6 @@ def test_add_args_base():
 
 def test_add_help_def_type():
     """test add help_def_type"""
-
     class Cfg1(BaseModel):
         arg_int: int
 

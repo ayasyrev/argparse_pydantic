@@ -5,8 +5,9 @@ import argparse
 
 from pydantic import BaseModel, Field
 
-from argparse_pydantic import add_args_from_model, argument_kwargs, create_model_obj
+from argparse_pydantic import add_args_from_model, create_model_obj, argument_kwargs
 from argparse_pydantic.test_tools import parsers_equal
+
 
 # create parser
 parser = argparse.ArgumentParser()
@@ -23,7 +24,7 @@ class AppCfg(BaseModel):  # pylint: disable=function-redefined
             flag="-v",
             help="increase output verbosity",
             action="store_true",
-        ),
+        )
     )
 
 
