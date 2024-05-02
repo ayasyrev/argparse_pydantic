@@ -1,0 +1,6 @@
+# result for run example_02_app with args: --cmd_1, 10
+# stdout
+# stderr
+usage: example_02_app.py [-h] [--arg_1 ARG_1] [--arg_2 ARG_2] [--arg_3 ARG_3]
+                         {cmd} ...
+example_02_app.py: error: argument {cmd}: invalid choice: '10' (choose from 'cmd')

@@ -3,13 +3,10 @@
 # Introducing Positional arguments
 import argparse
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 
 from argparse_pydantic import add_args_from_model, create_model_obj
-from argparse_pydantic.core import argument_kwargs
-
 from argparse_pydantic.test_tools import parsers_equal_typed
-
 
 # create parser
 parser = argparse.ArgumentParser()
