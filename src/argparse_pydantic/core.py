@@ -104,9 +104,10 @@ def add_field_arg(
     field_info: FieldInfo,
     undefined_positional: bool = True,
     help_def_type: bool = False,
+    use_dash: bool = False,
 ) -> None:
     """add argument to parser from field_info"""
-    flags = [f"--{field_name}"]
+    flags = [f"--{field_name.replace('_', '-')}"] if use_dash else [f"--{field_name}"]
     kwargs = argument_kwargs(
         help=field_info.description,
         required=field_info.is_required(),
@@ -220,6 +221,7 @@ def add_args_from_model(
     undefined_positional: bool = True,
     help_def_type: bool = False,
     create_group: bool = False,
+    use_dash: bool = False,
 ) -> argparse.ArgumentParser:
     """add args from model or list of models to parser"""
     if not isinstance(model, list):
@@ -231,7 +233,7 @@ def add_args_from_model(
             arg_group = parser
         for field_name, field_info in item.model_fields.items():
             add_field_arg(
-                arg_group, field_name, field_info, undefined_positional, help_def_type
+                arg_group, field_name, field_info, undefined_positional, help_def_type, use_dash
             )
     return parser
 

@@ -68,3 +68,30 @@ def test_add_args_simple_positional():
     assert cfg.arg_int == 1
     base_model_obj = SimpleArg(arg_int=1)
     assert cfg == base_model_obj
+
+
+def test_add_args_dash():
+    """test basic args"""
+    # base parser
+    parser_base = argparse.ArgumentParser()
+    parser_base.add_argument("--arg-int", type=int, required=True)
+    parser_base.add_argument("--arg-float", type=float, default=0.0)
+    parser_base.add_argument("--arg-str", type=str, default="")
+
+    # parser from cfg
+    parser = argparse.ArgumentParser()
+
+    # add arguments - SimpleArg, undefined - as optional, required
+    parser = add_args_from_model(parser, SimpleArg, undefined_positional=False, use_dash=True)
+    assert parsers_args_equal(parser_base, parser)
+    assert not parsers_actions_diff(parser_base, parser)
+    assert parsers_actions_equal(parser_base, parser)
+    assert parser_base.format_help() == parser.format_help()
+
+    # create instance
+    args = parser.parse_args(["--arg-int", "1"])
+    assert args.arg_int == 1
+    cfg = create_model_obj(SimpleArg, args)
+    assert cfg.arg_int == 1
+    base_model_obj = SimpleArg(arg_int=1)
+    assert cfg == base_model_obj
