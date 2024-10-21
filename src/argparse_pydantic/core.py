@@ -78,7 +78,7 @@ def argument_kwargs(
     return {key: val for key, val in kwargs.items() if val is not None}
 
 
-def get_field_type(field_info: FieldInfo) -> Type:
+def get_field_type(field_info: FieldInfo) -> Type[Any] | None:
     """get field type, convert to base type."""
     field_type = field_info.annotation
     if is_union(field_type):
@@ -99,7 +99,7 @@ def parse_field_kwargs(json_schema_extra: dict[str, Any]) -> dict[str, Any]:
 
 
 def add_field_arg(
-    parser: argparse.ArgumentParser,
+    parser: argparse.ArgumentParser | argparse._ArgumentGroup,
     field_name: str,
     field_info: FieldInfo,
     undefined_positional: bool = True,
@@ -144,7 +144,8 @@ def add_field_arg(
             default = ""
         else:
             default = f"default: {field_info.default}"
-        kwargs["help"] = kwargs.get("help", "") + f" [{field_type.__name__}] {default}"
+        field_type_name = field_type.__name__ if field_type is not None else "None"
+        kwargs["help"] = kwargs.get("help", "") + f" [{field_type_name}] {default}"
 
     dest = kwargs.get("dest", None)
     if dest and not check_dest_ok(dest, parser):
@@ -156,7 +157,9 @@ def add_field_arg(
     parser.add_argument(*flags, **kwargs)
 
 
-def check_dest_ok(dest: str, parser: argparse.ArgumentParser) -> bool:
+def check_dest_ok(
+    dest: str, parser: argparse.ArgumentParser | argparse._ArgumentGroup
+) -> bool:
     """check dest not exist"""
     if dest in [
         action.dest
@@ -167,7 +170,9 @@ def check_dest_ok(dest: str, parser: argparse.ArgumentParser) -> bool:
     return True
 
 
-def check_flags(flags: list[str], parser: argparse.ArgumentParser) -> list[str]:
+def check_flags(
+    flags: list[str], parser: argparse.ArgumentParser | argparse._ArgumentGroup
+) -> list[str]:
     """check and filter flags - return only valid flags"""
     if flags:
         dest_list = [
@@ -217,7 +222,7 @@ def validate_action(action: str, default: Optional[Type]) -> None:
 
 def add_args_from_model(
     parser: argparse.ArgumentParser,
-    model: BaseModel | list[BaseModel],
+    model: Type[BaseModel] | list[Type[BaseModel]],
     undefined_positional: bool = True,
     help_def_type: bool = False,
     create_group: bool = False,
@@ -227,10 +232,9 @@ def add_args_from_model(
     if not isinstance(model, list):
         model = [model]
     for item in model:  # if same name check at add_field_arg
-        if create_group:
-            arg_group = parser.add_argument_group(item.__name__)
-        else:
-            arg_group = parser
+        arg_parser = (
+            parser.add_argument_group(item.__name__) if create_group else parser
+        )
         for field_name, field_info in item.model_fields.items():
             add_field_arg(
                 arg_group, field_name, field_info, undefined_positional, help_def_type, use_dash
@@ -238,7 +242,7 @@ def add_args_from_model(
     return parser
 
 
-def create_model_obj(model: BaseModel, args: argparse.Namespace) -> BaseModel:
+def create_model_obj(model: Type[BaseModel], args: argparse.Namespace) -> BaseModel:
     """create model from parsed args"""
     kwargs = {
         key: val for key, val in args.__dict__.items() if key in model.model_fields
