@@ -14,7 +14,7 @@ from argparse_pydantic.helpers import ArgumentParserCfg
 
 class Arg(NamedTuple):
     name: str
-    model: BaseModel
+    model: Type[BaseModel]
 
 
 def get_args(func: Callable[..., Any]) -> List[Arg]:
@@ -29,7 +29,7 @@ def get_args(func: Callable[..., Any]) -> List[Arg]:
     return params
 
 
-def get_models(args: List[Arg]) -> List[BaseModel]:
+def get_models(args: List[Arg]) -> List[Type[BaseModel]]:
     """get list models from args"""
     return [arg.model for arg in args]
 
@@ -40,7 +40,7 @@ def app(
     usage: str | None = None,
     description: str | None = None,
     epilog: str | None = None,
-    parents: Sequence[ArgumentParser] = None,
+    parents: Sequence[ArgumentParser] | None = None,
     formatter_class: Type[HelpFormatter] = HelpFormatter,
     prefix_chars: str = "-",
     fromfile_prefix_chars: str | None = None,
@@ -72,7 +72,7 @@ def app(
 
     # Create app.
     # Simple variant - expecting function with one argument.
-    def create_app(func: Callable[[Type[Any]], None]):
+    def create_app(func: Callable[..., Any]):
         args = get_args(func)
         app_cfg = args[0].model
 
@@ -102,7 +102,7 @@ class App:
         usage: str | None = None,
         description: str | None = None,
         epilog: str | None = None,
-        parents: Sequence[ArgumentParser] = None,
+        parents: Sequence[ArgumentParser] | None = None,
         formatter_class: Type[HelpFormatter] = HelpFormatter,
         prefix_chars: str = "-",
         fromfile_prefix_chars: str | None = None,
@@ -138,7 +138,9 @@ class App:
         self.commands["main"] = func
         self.configs["main"] = get_args(func)
 
-    def command(self, func: Callable[[Type[Any]], None] = None, *, name: str = ""):
+    def command(
+        self, func: Callable[[Type[Any]], None] | str | None = None, *, name: str = ""
+    ):
         if func is None:
             return partial(self.command, name=name)
         if isinstance(func, str):
@@ -189,14 +191,14 @@ class App:
 
 
 def run(
-    func: Callable[[BaseModel], None],
-    *args: Callable[[BaseModel], None],
-    **kwargs: Callable[[BaseModel], None],
+    func: Callable[[Type[BaseModel]], None],
+    *args: Callable[[Type[BaseModel]], None],
+    **kwargs: Callable[[Type[BaseModel]], None] | ArgumentParserCfg,
 ) -> None:
     """Parse command line arguments and run function.
     Pass ArgumentParser Cfg as `parser_cfg=parser_cfg`.
     Pass command functions as arguments or `command=func`."""
-    parser_cfg = kwargs.pop("parser_cfg", None)
+    parser_cfg: ArgumentParserCfg | None = kwargs.pop("parser_cfg", None)
     run_app = App(parser_cfg=parser_cfg)
     run_app.main(func)
     if args:

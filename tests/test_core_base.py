@@ -25,9 +25,9 @@ def test_get_field_type():
         arg_1: int
         arg_2: Optional[int] = None
 
-    assert get_field_type(Model.model_fields["arg_1"]) == int
+    assert get_field_type(Model.model_fields["arg_1"]) is int
     assert Model.model_fields["arg_2"].annotation == Optional[int]
-    assert get_field_type(Model.model_fields["arg_2"]) == int
+    assert get_field_type(Model.model_fields["arg_2"]) is int
 
 
 def test_process_flag():
