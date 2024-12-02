@@ -82,7 +82,9 @@ def test_add_args_dash():
     parser = argparse.ArgumentParser()
 
     # add arguments - SimpleArg, undefined - as optional, required
-    parser = add_args_from_model(parser, SimpleArg, undefined_positional=False, use_dash=True)
+    parser = add_args_from_model(
+        parser, SimpleArg, undefined_positional=False, use_dash=True
+    )
     assert parsers_args_equal(parser_base, parser)
     assert not parsers_actions_diff(parser_base, parser)
     assert parsers_actions_equal(parser_base, parser)
