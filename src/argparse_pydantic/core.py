@@ -232,12 +232,15 @@ def add_args_from_model(
     if not isinstance(model, list):
         model = [model]
     for item in model:  # if same name check at add_field_arg
-        arg_parser = (
-            parser.add_argument_group(item.__name__) if create_group else parser
-        )
+        arg_group = parser.add_argument_group(item.__name__) if create_group else parser
         for field_name, field_info in item.model_fields.items():
             add_field_arg(
-                arg_group, field_name, field_info, undefined_positional, help_def_type, use_dash
+                arg_group,
+                field_name,
+                field_info,
+                undefined_positional,
+                help_def_type,
+                use_dash,
             )
     return parser
 
