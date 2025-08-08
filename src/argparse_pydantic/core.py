@@ -120,8 +120,8 @@ def add_field_arg(
     if field_info.json_schema_extra:
         field_kwargs = parse_field_kwargs(field_info.json_schema_extra)
         kwargs = {
-            **field_kwargs,
             **kwargs,
+            **field_kwargs,
         }
 
     if "flag" in kwargs:
